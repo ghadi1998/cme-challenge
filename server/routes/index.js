@@ -1,17 +1,26 @@
 const router = require("express").Router();
-const { verifyUserToken, IsAdmin, IsUser } = require("../middleware/auth");
-const userController = require("../controllers/user");
+import {
+  verifyUserToken,
+  IsAdmin,
+  IsUser,
+} from "../middleware/auth-middleware";
+import {
+  register,
+  login,
+  getProducts,
+  adminEvent,
+} from "../controllers/user-controller";
 
 // Register a new User
-router.post("/register", userController.register);
+router.post("/register", register);
 
 // Login
-router.post("/login", userController.login);
+router.post("/login", login);
 
-// Auth user only
-router.get("/products", verifyUserToken, IsUser, userController.userEvent);
+//Auth user only
+router.get("/products", verifyUserToken, IsUser, getProducts);
 
-// Auth Admin only
-router.get("/admin-page", verifyUserToken, IsAdmin, userController.adminEvent);
+//Auth Admin only
+router.get("/admin-page", verifyUserToken, IsAdmin, adminEvent);
 
-module.exports = router;
+export default router;

@@ -1,20 +1,23 @@
 "use strict";
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports["default"] = void 0;
+
+var _authMiddleware = require("../middleware/auth-middleware");
+
+var _userController = require("../controllers/user-controller");
+
 var router = require("express").Router();
 
-var _require = require("../middleware/auth"),
-    verifyUserToken = _require.verifyUserToken,
-    IsAdmin = _require.IsAdmin,
-    IsUser = _require.IsUser;
+// Register a new User
+router.post("/register", _userController.register); // Login
 
-var userController = require("../controllers/user"); // Register a new User
+router.post("/login", _userController.login); //Auth user only
 
+router.get("/products", _authMiddleware.verifyUserToken, _authMiddleware.IsUser, _userController.getProducts); //Auth Admin only
 
-router.post("/register", userController.register); // Login
-
-router.post("/login", userController.login); // Auth user only
-
-router.get("/products", verifyUserToken, IsUser, userController.userEvent); // Auth Admin only
-
-router.get("/admin-page", verifyUserToken, IsAdmin, userController.adminEvent);
-module.exports = router;
+router.get("/admin-page", _authMiddleware.verifyUserToken, _authMiddleware.IsAdmin, _userController.adminEvent);
+var _default = router;
+exports["default"] = _default;

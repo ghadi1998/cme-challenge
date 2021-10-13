@@ -2,7 +2,7 @@ import express, { json, urlencoded } from "express";
 import cookieParser from "cookie-parser";
 import logger from "morgan";
 
-import indexRouter from "./routes/userRoutes/userRoutes";
+const authRoute = require("./routes/index").default;
 
 var app = express();
 
@@ -11,6 +11,7 @@ app.use(json());
 app.use(urlencoded({ extended: false }));
 app.use(cookieParser());
 
-app.use("/", indexRouter);
+// Route Middlewares
+app.use("/api", authRoute);
 
 export default app;
