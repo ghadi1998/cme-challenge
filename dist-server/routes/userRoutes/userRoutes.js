@@ -6,3 +6,4 @@ var router = (0, _express.Router)();
 router.post("/index", function (req, res) {
   res.send("index page");
 });
+module.exports = router;
