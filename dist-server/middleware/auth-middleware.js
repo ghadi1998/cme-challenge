@@ -17,12 +17,9 @@ var _config = require("../config/config");
 
 var _jsonwebtoken = require("jsonwebtoken");
 
-var _userModel = _interopRequireDefault(require("../models/userModel"));
-
-var _mongoose = require("mongoose");
-
 function verifyUserToken(req, res, next) {
   var token = req.headers.authorization;
+  console.log(token);
   if (!token) return res.status(401).send("Access Denied / Unauthorized request");
 
   try {
@@ -31,6 +28,7 @@ function verifyUserToken(req, res, next) {
     if (token === "null" || !token) return res.status(401).send("Unauthorized request");
     var verifiedUser = (0, _jsonwebtoken.verify)(token, _config.TOKEN_SECRET); // config.TOKEN_SECRET => 'secretKey'
 
+    console.log(verifiedUser);
     if (!verifiedUser) return res.status(401).send("Unauthorized request");
     req.user = verifiedUser; // user_id & user_type_id
 
@@ -40,19 +38,17 @@ function verifyUserToken(req, res, next) {
   }
 }
 
-function IsUser(_x, _x2, _x3) {
+function IsUser(_x, _x2) {
   return _IsUser.apply(this, arguments);
 }
 
 function _IsUser() {
-  _IsUser = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee(req, res, next) {
+  _IsUser = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee(req, res) {
     return _regenerator["default"].wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
-            if (req.user.user_type_id === 0) {
-              next();
-            }
+            if (req.user.user_type_id === 0) {}
 
             return _context.abrupt("return", res.status(401).send("Unauthorized!"));
 
@@ -66,7 +62,7 @@ function _IsUser() {
   return _IsUser.apply(this, arguments);
 }
 
-function IsAdmin(_x4, _x5, _x6) {
+function IsAdmin(_x3, _x4, _x5) {
   return _IsAdmin.apply(this, arguments);
 }
 

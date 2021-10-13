@@ -3,7 +3,7 @@ import { DB_HOST, TOKEN_SECRET } from "../config/config";
 import { genSalt, hash, compare } from "bcryptjs";
 import { sign } from "jsonwebtoken";
 import User from "../models/userModel";
-import Fruit from "../models/fruits";
+import fruits from "../models/fruits";
 
 // Connect to DB
 const db = DB_HOST;
@@ -72,54 +72,11 @@ export async function login(req, res) {
   });
 }
 
-// Access auth users only
-exports.getProducts = async (req, res) => {
+export async function getFruits(req, res, next) {
   try {
-    const fruits = await Fruit.find().exec();
-    res.json(fruits);
+    const result = await fruits.find().exec();
+   if(result) res.status(200).send(result);
   } catch (err) {
-    return err;
+   console.log(err);
   }
-};
-
-exports.adminEvent = (req, res) => {
-  let specialEvents = [
-    {
-      _id: "1",
-      name: "Auto Expo Special",
-      description: "lorem ipsum",
-      date: "2012-04-23T18:25:43.511Z",
-    },
-    {
-      _id: "2",
-      name: "Auto Expo Special",
-      description: "lorem ipsum",
-      date: "2012-04-23T18:25:43.511Z",
-    },
-    {
-      _id: "3",
-      name: "Auto Expo Special",
-      description: "lorem ipsum",
-      date: "2012-04-23T18:25:43.511Z",
-    },
-    {
-      _id: "4",
-      name: "Auto Expo Special",
-      description: "lorem ipsum",
-      date: "2012-04-23T18:25:43.511Z",
-    },
-    {
-      _id: "5",
-      name: "Auto Expo Special",
-      description: "lorem ipsum",
-      date: "2012-04-23T18:25:43.511Z",
-    },
-    {
-      _id: "6",
-      name: "Auto Expo Special",
-      description: "lorem ipsum",
-      date: "2012-04-23T18:25:43.511Z",
-    },
-  ];
-  res.json(specialEvents);
 };

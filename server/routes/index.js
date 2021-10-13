@@ -7,20 +7,20 @@ import {
 import {
   register,
   login,
-  getProducts,
   adminEvent,
+  getFruits,
 } from "../controllers/user-controller";
 
 // Register a new User
-router.post("/register", register);
+//router.post("/register", register);
 
 // Login
 router.post("/login", login);
 
 //Auth user only
-router.get("/products", verifyUserToken, IsUser, getProducts);
+router.post("/products",  verifyUserToken, IsUser , getFruits)
 
 //Auth Admin only
-router.get("/admin-page", verifyUserToken, IsAdmin, adminEvent);
+//router.get("/admin-page", verifyUserToken, IsAdmin, adminEvent);
 
 export default router;

@@ -5,6 +5,7 @@ var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefau
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.getFruits = getFruits;
 exports.login = login;
 
 var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
@@ -107,51 +108,50 @@ exports.register = /*#__PURE__*/function () {
 
 function login(_x3, _x4) {
   return _login.apply(this, arguments);
-} // Access auth users only
-
+}
 
 function _login() {
-  _login = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee4(req, res) {
-    return _regenerator["default"].wrap(function _callee4$(_context4) {
+  _login = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee3(req, res) {
+    return _regenerator["default"].wrap(function _callee3$(_context3) {
       while (1) {
-        switch (_context4.prev = _context4.next) {
+        switch (_context3.prev = _context3.next) {
           case 0:
             _userModel["default"].findOne({
               email: req.body.email
             }, /*#__PURE__*/function () {
-              var _ref3 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee3(err, user) {
+              var _ref2 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee2(err, user) {
                 var validPass, payload, token;
-                return _regenerator["default"].wrap(function _callee3$(_context3) {
+                return _regenerator["default"].wrap(function _callee2$(_context2) {
                   while (1) {
-                    switch (_context3.prev = _context3.next) {
+                    switch (_context2.prev = _context2.next) {
                       case 0:
                         if (!err) {
-                          _context3.next = 4;
+                          _context2.next = 4;
                           break;
                         }
 
                         console.log(err);
-                        _context3.next = 16;
+                        _context2.next = 16;
                         break;
 
                       case 4:
                         if (!user) {
-                          _context3.next = 15;
+                          _context2.next = 15;
                           break;
                         }
 
-                        _context3.next = 7;
+                        _context2.next = 7;
                         return (0, _bcryptjs.compare)(req.body.password, user.password);
 
                       case 7:
-                        validPass = _context3.sent;
+                        validPass = _context2.sent;
 
                         if (validPass) {
-                          _context3.next = 10;
+                          _context2.next = 10;
                           break;
                         }
 
-                        return _context3.abrupt("return", res.status(401).send("Mobile/Email or Password is wrong"));
+                        return _context2.abrupt("return", res.status(401).send("Mobile/Email or Password is wrong"));
 
                       case 10:
                         // Create and assign token
@@ -163,7 +163,7 @@ function _login() {
                         res.status(200).header("auth-token", token).send({
                           token: token
                         });
-                        _context3.next = 16;
+                        _context2.next = 16;
                         break;
 
                       case 15:
@@ -171,93 +171,61 @@ function _login() {
 
                       case 16:
                       case "end":
-                        return _context3.stop();
+                        return _context2.stop();
                     }
                   }
-                }, _callee3);
+                }, _callee2);
               }));
 
-              return function (_x7, _x8) {
-                return _ref3.apply(this, arguments);
+              return function (_x8, _x9) {
+                return _ref2.apply(this, arguments);
               };
             }());
 
           case 1:
           case "end":
-            return _context4.stop();
+            return _context3.stop();
         }
       }
-    }, _callee4);
+    }, _callee3);
   }));
   return _login.apply(this, arguments);
 }
 
-exports.getProducts = /*#__PURE__*/function () {
-  var _ref2 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee2(req, res) {
-    var fruits;
-    return _regenerator["default"].wrap(function _callee2$(_context2) {
+function getFruits(_x5, _x6, _x7) {
+  return _getFruits.apply(this, arguments);
+}
+
+function _getFruits() {
+  _getFruits = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee4(req, res, next) {
+    var result;
+    return _regenerator["default"].wrap(function _callee4$(_context4) {
       while (1) {
-        switch (_context2.prev = _context2.next) {
+        switch (_context4.prev = _context4.next) {
           case 0:
-            _context2.prev = 0;
-            _context2.next = 3;
+            _context4.prev = 0;
+            _context4.next = 3;
             return _fruits["default"].find().exec();
 
           case 3:
-            fruits = _context2.sent;
-            res.json(fruits);
-            _context2.next = 10;
+            result = _context4.sent;
+            if (result) res.status(200).send(result);
+            _context4.next = 10;
             break;
 
           case 7:
-            _context2.prev = 7;
-            _context2.t0 = _context2["catch"](0);
-            return _context2.abrupt("return", _context2.t0);
+            _context4.prev = 7;
+            _context4.t0 = _context4["catch"](0);
+            console.log(_context4.t0);
 
           case 10:
           case "end":
-            return _context2.stop();
+            return _context4.stop();
         }
       }
-    }, _callee2, null, [[0, 7]]);
+    }, _callee4, null, [[0, 7]]);
   }));
+  return _getFruits.apply(this, arguments);
+}
 
-  return function (_x5, _x6) {
-    return _ref2.apply(this, arguments);
-  };
-}();
-
-exports.adminEvent = function (req, res) {
-  var specialEvents = [{
-    _id: "1",
-    name: "Auto Expo Special",
-    description: "lorem ipsum",
-    date: "2012-04-23T18:25:43.511Z"
-  }, {
-    _id: "2",
-    name: "Auto Expo Special",
-    description: "lorem ipsum",
-    date: "2012-04-23T18:25:43.511Z"
-  }, {
-    _id: "3",
-    name: "Auto Expo Special",
-    description: "lorem ipsum",
-    date: "2012-04-23T18:25:43.511Z"
-  }, {
-    _id: "4",
-    name: "Auto Expo Special",
-    description: "lorem ipsum",
-    date: "2012-04-23T18:25:43.511Z"
-  }, {
-    _id: "5",
-    name: "Auto Expo Special",
-    description: "lorem ipsum",
-    date: "2012-04-23T18:25:43.511Z"
-  }, {
-    _id: "6",
-    name: "Auto Expo Special",
-    description: "lorem ipsum",
-    date: "2012-04-23T18:25:43.511Z"
-  }];
-  res.json(specialEvents);
-};
+;
