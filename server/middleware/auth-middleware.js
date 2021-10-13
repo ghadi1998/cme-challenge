@@ -27,15 +27,19 @@ export function verifyUserToken(req, res, next) {
   }
 }
 
-export async function IsUser(req, res) {
+export async function IsUser(req, res, next) {
   if (req.user.user_type_id === 0) {
+    console.log(req.user.user_type_id);
+    next();
+  } else {
+    return res.status(401).send("Unauthorized!");
   }
-  return res.status(401).send("Unauthorized!");
 }
 
 export async function IsAdmin(req, res, next) {
   if (req.user.user_type_id === 1) {
     next();
+  } else {
+    return res.status(401).send("Unauthorized!");
   }
-  return res.status(401).send("Unauthorized!");
 }
