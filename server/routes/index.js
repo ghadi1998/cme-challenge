@@ -9,6 +9,8 @@ import {
   login,
   adminEvent,
   getFruits,
+  buyFruits,
+  getTransactions,
 } from "../controllers/user-controller";
 
 // Register a new User
@@ -18,9 +20,12 @@ import {
 router.post("/login", login);
 
 //Auth user only
-router.post("/products",  verifyUserToken, IsUser , getFruits)
+router.post("/list-fruits", verifyUserToken, IsUser, getFruits);
+
+//Auth user only
+router.post("/buyFruits", verifyUserToken, IsUser, buyFruits);
 
 //Auth Admin only
-//router.get("/admin-page", verifyUserToken, IsAdmin, adminEvent);
+router.post("/get-transactions", verifyUserToken, IsAdmin, getTransactions);
 
 export default router;

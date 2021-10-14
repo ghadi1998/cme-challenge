@@ -4,6 +4,9 @@ import { genSalt, hash, compare } from "bcryptjs";
 import { sign } from "jsonwebtoken";
 import User from "../models/userModel";
 import fruits from "../models/fruits";
+import Cart from "../models/cart";
+import Transaction from "../models/transactions";
+import transactions from "../models/transactions";
 
 // Connect to DB
 const db = DB_HOST;
@@ -75,8 +78,82 @@ export async function login(req, res) {
 export async function getFruits(req, res, next) {
   try {
     const result = await fruits.find().exec();
-   if(result) res.status(200).send(result);
+    if (result) res.status(200).send(result);
   } catch (err) {
-   console.log(err);
+    console.log(err);
+  }
+}
+
+exports.buyFruits = async (req, res) => {
+  const { productId, quantity, name, price } = req.body;
+
+  const userId = req.user.id; //TODO: the logged in user id
+
+  try {
+    getFruitsByName(name, quantity, res);
+
+    let cart = await Cart.findOne({ userId });
+
+    if (cart) {
+      //cart exists for user
+      let itemIndex = cart.products.findIndex((p) => p.productId == productId);
+
+      if (itemIndex > -1) {
+        //product exists in the cart, update the quantity
+        let productItem = cart.products[itemIndex];
+        productItem.quantity = quantity;
+        cart.products[itemIndex] = productItem;
+      } else {
+        //product does not exists in cart, add new item
+        cart.products.push({ productId, quantity, name, price });
+      }
+      cart = await cart.save();
+      Transaction.create({
+        transactionUser: userId,
+        fruitType: name,
+        quantity: quantity,
+      });
+
+      return res.status(201).send(cart);
+    } else {
+      //no cart for user, create new cart
+      const newCart = await Cart.create({
+        userId,
+        products: [{ productId, quantity, name, price }],
+      });
+
+      Transaction.create({
+        transactionUser: userId,
+        fruitType: name,
+        quantity: quantity,
+      });
+
+      return res.status(201).send(newCart);
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("Something went wrong");
   }
 };
+
+export async function getTransactions(req, res, next) {
+  try {
+    const result = await transactions.find().exec();
+    if (result) res.status(200).send(result);
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+export async function getFruitsByName(name, quantity, res) {
+  try {
+    const result = await fruits.find({ name: name }).exec();
+    if (quantity > result[0].quantity) {
+      res.send(" There is no enough supply");
+    } else {
+      console.log(result);
+    }
+  } catch (err) {
+    console.log(err);
+  }
+}

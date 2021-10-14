@@ -16,8 +16,10 @@ var router = require("express").Router();
 // Login
 router.post("/login", _userController.login); //Auth user only
 
-router.post("/products", _authMiddleware.verifyUserToken, _authMiddleware.IsUser, _userController.getFruits); //Auth Admin only
-//router.get("/admin-page", verifyUserToken, IsAdmin, adminEvent);
+router.post("/list-fruits", _authMiddleware.verifyUserToken, _authMiddleware.IsUser, _userController.getFruits); //Auth user only
 
+router.post("/buyFruits", _authMiddleware.verifyUserToken, _authMiddleware.IsUser, _userController.buyFruits); //Auth Admin only
+
+router.post("/get-transactions", _authMiddleware.verifyUserToken, _authMiddleware.IsAdmin, _userController.getTransactions);
 var _default = router;
 exports["default"] = _default;
