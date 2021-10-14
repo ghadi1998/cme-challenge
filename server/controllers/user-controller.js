@@ -90,45 +90,49 @@ exports.buyFruits = async (req, res) => {
   const userId = req.user.id; //TODO: the logged in user id
 
   try {
-    getFruitsByName(name, quantity, res);
+    const result = await getFruitsByName(name, quantity, res);
+    if (!result) {
+      let cart = await Cart.findOne({ userId });
 
-    let cart = await Cart.findOne({ userId });
+      if (cart) {
+        //cart exists for user
+        let itemIndex = cart.products.findIndex(
+          (p) => p.productId == productId
+        );
 
-    if (cart) {
-      //cart exists for user
-      let itemIndex = cart.products.findIndex((p) => p.productId == productId);
+        if (itemIndex > -1) {
+          //product exists in the cart, update the quantity
+          let productItem = cart.products[itemIndex];
+          productItem.quantity = quantity;
+          cart.products[itemIndex] = productItem;
+        } else {
+          //product does not exists in cart, add new item
+          cart.products.push({ productId, quantity, name, price });
+        }
+        cart = await cart.save();
+        Transaction.create({
+          transactionUser: userId,
+          fruitType: name,
+          quantity: quantity,
+        });
 
-      if (itemIndex > -1) {
-        //product exists in the cart, update the quantity
-        let productItem = cart.products[itemIndex];
-        productItem.quantity = quantity;
-        cart.products[itemIndex] = productItem;
+        return res.status(201).send(cart);
       } else {
-        //product does not exists in cart, add new item
-        cart.products.push({ productId, quantity, name, price });
+        //no cart for user, create new cart
+        const newCart = await Cart.create({
+          userId,
+          products: [{ productId, quantity, name, price }],
+        });
+
+        Transaction.create({
+          transactionUser: userId,
+          fruitType: name,
+          quantity: quantity,
+        });
+        return res.status(201).send(newCart);
       }
-      cart = await cart.save();
-      Transaction.create({
-        transactionUser: userId,
-        fruitType: name,
-        quantity: quantity,
-      });
-
-      return res.status(201).send(cart);
     } else {
-      //no cart for user, create new cart
-      const newCart = await Cart.create({
-        userId,
-        products: [{ productId, quantity, name, price }],
-      });
-
-      Transaction.create({
-        transactionUser: userId,
-        fruitType: name,
-        quantity: quantity,
-      });
-
-      return res.status(201).send(newCart);
+      return res.status(403).send("no supply found");
     }
   } catch (err) {
     console.log(err);
@@ -139,7 +143,7 @@ exports.buyFruits = async (req, res) => {
 export async function getTransactions(req, res, next) {
   try {
     const result = await transactions.find().exec();
-    if (result) res.status(200).send(result);
+    if (result) return truee;
   } catch (err) {
     console.log(err);
   }
@@ -148,11 +152,9 @@ export async function getTransactions(req, res, next) {
 export async function getFruitsByName(name, quantity, res) {
   try {
     const result = await fruits.find({ name: name }).exec();
-    if (quantity > result[0].quantity) {
-      res.send(" There is no enough supply");
-    } else {
-      console.log(result);
-    }
+    let newRes = quantity > result[0].quantity ? true : false;
+    console.log(newRes);
+    return newRes;
   } catch (err) {
     console.log(err);
   }

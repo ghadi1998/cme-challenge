@@ -236,7 +236,7 @@ function _getFruits() {
 
 exports.buyFruits = /*#__PURE__*/function () {
   var _ref2 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee2(req, res) {
-    var _req$body, productId, quantity, name, price, userId, cart, itemIndex, productItem, newCart;
+    var _req$body, productId, quantity, name, price, userId, result, cart, itemIndex, productItem, newCart;
 
     return _regenerator["default"].wrap(function _callee2$(_context2) {
       while (1) {
@@ -246,17 +246,27 @@ exports.buyFruits = /*#__PURE__*/function () {
             userId = req.user.id; //TODO: the logged in user id
 
             _context2.prev = 2;
-            getFruitsByName(name, quantity, res);
-            _context2.next = 6;
+            _context2.next = 5;
+            return getFruitsByName(name, quantity, res);
+
+          case 5:
+            result = _context2.sent;
+
+            if (result) {
+              _context2.next = 27;
+              break;
+            }
+
+            _context2.next = 9;
             return _cart["default"].findOne({
               userId: userId
             });
 
-          case 6:
+          case 9:
             cart = _context2.sent;
 
             if (!cart) {
-              _context2.next = 17;
+              _context2.next = 20;
               break;
             }
 
@@ -280,10 +290,10 @@ exports.buyFruits = /*#__PURE__*/function () {
               });
             }
 
-            _context2.next = 12;
+            _context2.next = 15;
             return cart.save();
 
-          case 12:
+          case 15:
             cart = _context2.sent;
 
             _transactions["default"].create({
@@ -294,8 +304,8 @@ exports.buyFruits = /*#__PURE__*/function () {
 
             return _context2.abrupt("return", res.status(201).send(cart));
 
-          case 17:
-            _context2.next = 19;
+          case 20:
+            _context2.next = 22;
             return _cart["default"].create({
               userId: userId,
               products: [{
@@ -306,7 +316,7 @@ exports.buyFruits = /*#__PURE__*/function () {
               }]
             });
 
-          case 19:
+          case 22:
             newCart = _context2.sent;
 
             _transactions["default"].create({
@@ -317,22 +327,29 @@ exports.buyFruits = /*#__PURE__*/function () {
 
             return _context2.abrupt("return", res.status(201).send(newCart));
 
-          case 22:
+          case 25:
             _context2.next = 28;
             break;
 
-          case 24:
-            _context2.prev = 24;
+          case 27:
+            return _context2.abrupt("return", res.status(403).send("no supply found"));
+
+          case 28:
+            _context2.next = 34;
+            break;
+
+          case 30:
+            _context2.prev = 30;
             _context2.t0 = _context2["catch"](2);
             console.log(_context2.t0);
             res.status(500).send("Something went wrong");
 
-          case 28:
+          case 34:
           case "end":
             return _context2.stop();
         }
       }
-    }, _callee2, null, [[2, 24]]);
+    }, _callee2, null, [[2, 30]]);
   }));
 
   return function (_x8, _x9) {
@@ -357,21 +374,29 @@ function _getTransactions() {
 
           case 3:
             result = _context6.sent;
-            if (result) res.status(200).send(result);
-            _context6.next = 10;
+
+            if (!result) {
+              _context6.next = 6;
+              break;
+            }
+
+            return _context6.abrupt("return", truee);
+
+          case 6:
+            _context6.next = 11;
             break;
 
-          case 7:
-            _context6.prev = 7;
+          case 8:
+            _context6.prev = 8;
             _context6.t0 = _context6["catch"](0);
             console.log(_context6.t0);
 
-          case 10:
+          case 11:
           case "end":
             return _context6.stop();
         }
       }
-    }, _callee6, null, [[0, 7]]);
+    }, _callee6, null, [[0, 8]]);
   }));
   return _getTransactions.apply(this, arguments);
 }
@@ -382,7 +407,7 @@ function getFruitsByName(_x13, _x14, _x15) {
 
 function _getFruitsByName() {
   _getFruitsByName = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee7(name, quantity, res) {
-    var result;
+    var result, newRes;
     return _regenerator["default"].wrap(function _callee7$(_context7) {
       while (1) {
         switch (_context7.prev = _context7.next) {
@@ -395,27 +420,21 @@ function _getFruitsByName() {
 
           case 3:
             result = _context7.sent;
+            newRes = quantity > result[0].quantity ? true : false;
+            console.log(newRes);
+            return _context7.abrupt("return", newRes);
 
-            if (quantity > result[0].quantity) {
-              res.send(" There is no enough supply");
-            } else {
-              console.log(result);
-            }
-
-            _context7.next = 10;
-            break;
-
-          case 7:
-            _context7.prev = 7;
+          case 9:
+            _context7.prev = 9;
             _context7.t0 = _context7["catch"](0);
             console.log(_context7.t0);
 
-          case 10:
+          case 12:
           case "end":
             return _context7.stop();
         }
       }
-    }, _callee7, null, [[0, 7]]);
+    }, _callee7, null, [[0, 9]]);
   }));
   return _getFruitsByName.apply(this, arguments);
 }
