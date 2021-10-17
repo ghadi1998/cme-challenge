@@ -10,11 +10,12 @@ import {
   adminEvent,
   getFruits,
   buyFruits,
-  getTransactions,
+  getAllTransactions,
+  getMyTransactions,
 } from "../controllers/user-controller";
 
 // Register a new User
-//router.post("/register", register);
+router.post("/register", register);
 
 // Login
 router.post("/login", login);
@@ -26,6 +27,14 @@ router.post("/list-fruits", verifyUserToken, IsUser, getFruits);
 router.post("/buyFruits", verifyUserToken, IsUser, buyFruits);
 
 //Auth Admin only
-router.post("/get-transactions", verifyUserToken, IsAdmin, getTransactions);
+router.post(
+  "/get-all-transactions",
+  verifyUserToken,
+  IsAdmin,
+  getAllTransactions
+);
+
+//Auth Admin only
+//router.post("/get-my-transactions", verifyUserToken, IsUser, getMyTransactions);
 
 export default router;

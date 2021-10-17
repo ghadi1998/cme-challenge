@@ -6,7 +6,6 @@ import User from "../models/userModel";
 import fruits from "../models/fruits";
 import Cart from "../models/cart";
 import Transaction from "../models/transactions";
-import transactions from "../models/transactions";
 
 // Connect to DB
 const db = DB_HOST;
@@ -110,11 +109,13 @@ exports.buyFruits = async (req, res) => {
           cart.products.push({ productId, quantity, name, price });
         }
         cart = await cart.save();
-        Transaction.create({
+        const newTransaction = Transaction.create({
           transactionUser: userId,
           fruitType: name,
           quantity: quantity,
         });
+
+        insertUserTransaction(userId, newTransaction);
 
         return res.status(201).send(cart);
       } else {
@@ -124,11 +125,13 @@ exports.buyFruits = async (req, res) => {
           products: [{ productId, quantity, name, price }],
         });
 
-        Transaction.create({
+        const newTransaction = transactionSchema.create({
           transactionUser: userId,
           fruitType: name,
           quantity: quantity,
         });
+
+        insertUserTransaction(userId, newTransaction);
         return res.status(201).send(newCart);
       }
     } else {
@@ -140,7 +143,7 @@ exports.buyFruits = async (req, res) => {
   }
 };
 
-export async function getTransactions(req, res, next) {
+export async function getAllTransactions(req, res, next) {
   try {
     const result = await transactions.find().exec();
     if (result) return truee;
@@ -155,6 +158,17 @@ export async function getFruitsByName(name, quantity, res) {
     let newRes = quantity > result[0].quantity ? true : false;
     console.log(newRes);
     return newRes;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+export async function insertUserTransaction(userId, transaction) {
+  try {
+    const result = await User.find({ _id: userId }).then((result) => {
+      result[0].transactions.push(transaction);
+      console.log(" This is the insertUserTransaction", result[0]);
+    });
   } catch (err) {
     console.log(err);
   }
