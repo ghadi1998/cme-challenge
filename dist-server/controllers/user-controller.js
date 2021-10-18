@@ -5,6 +5,7 @@ var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefau
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.changeQuantity = changeQuantity;
 exports.getAllTransactionsAdmin = getAllTransactionsAdmin;
 exports.getFruits = getFruits;
 exports.getStock = getStock;
@@ -62,7 +63,7 @@ exports.register = /*#__PURE__*/function () {
               break;
             }
 
-            res.status(401).send("user exists");
+            res.status(401).send("user does not exist");
             _context.next = 15;
             break;
 
@@ -185,7 +186,7 @@ function _login() {
                 }, _callee3);
               }));
 
-              return function (_x16, _x17) {
+              return function (_x18, _x19) {
                 return _ref3.apply(this, arguments);
               };
             }());
@@ -255,7 +256,7 @@ exports.buyFruits = /*#__PURE__*/function () {
             result = _context2.sent;
 
             if (result) {
-              _context2.next = 37;
+              _context2.next = 35;
               break;
             }
 
@@ -268,7 +269,7 @@ exports.buyFruits = /*#__PURE__*/function () {
             cart = _context2.sent;
 
             if (!cart) {
-              _context2.next = 25;
+              _context2.next = 24;
               break;
             }
 
@@ -306,15 +307,14 @@ exports.buyFruits = /*#__PURE__*/function () {
 
           case 18:
             newTransaction = _context2.sent;
-            console.log(newTransaction);
-            _context2.next = 22;
+            _context2.next = 21;
             return insertUserTransaction(userId, newTransaction);
 
-          case 22:
+          case 21:
             return _context2.abrupt("return", res.status(201).send(cart));
 
-          case 25:
-            _context2.next = 27;
+          case 24:
+            _context2.next = 26;
             return _cart["default"].create({
               userId: userId,
               products: [{
@@ -325,47 +325,46 @@ exports.buyFruits = /*#__PURE__*/function () {
               }]
             });
 
-          case 27:
+          case 26:
             newCart = _context2.sent;
-            _context2.next = 30;
+            _context2.next = 29;
             return _transactions["default"].create({
               transactionUser: userId,
               fruitType: name,
               quantity: quantity
             });
 
-          case 30:
+          case 29:
             _newTransaction = _context2.sent;
-            console.log(_newTransaction);
-            _context2.next = 34;
+            _context2.next = 32;
             return insertUserTransaction(userId, _newTransaction);
 
-          case 34:
+          case 32:
             return _context2.abrupt("return", res.status(201).send(newCart));
 
-          case 35:
-            _context2.next = 38;
+          case 33:
+            _context2.next = 36;
             break;
 
-          case 37:
+          case 35:
             return _context2.abrupt("return", res.status(403).send("no supply found"));
 
-          case 38:
-            _context2.next = 44;
+          case 36:
+            _context2.next = 42;
             break;
 
-          case 40:
-            _context2.prev = 40;
+          case 38:
+            _context2.prev = 38;
             _context2.t0 = _context2["catch"](2);
             console.log(_context2.t0);
             res.status(500).send("Something went wrong");
 
-          case 44:
+          case 42:
           case "end":
             return _context2.stop();
         }
       }
-    }, _callee2, null, [[2, 40]]);
+    }, _callee2, null, [[2, 38]]);
   }));
 
   return function (_x8, _x9) {
@@ -534,4 +533,46 @@ function _getUserTransactions() {
     }, _callee9, null, [[0, 9]]);
   }));
   return _getUserTransactions.apply(this, arguments);
+}
+
+function changeQuantity(_x16, _x17) {
+  return _changeQuantity.apply(this, arguments);
+}
+
+function _changeQuantity() {
+  _changeQuantity = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee10(req, res) {
+    var result;
+    return _regenerator["default"].wrap(function _callee10$(_context10) {
+      while (1) {
+        switch (_context10.prev = _context10.next) {
+          case 0:
+            _context10.prev = 0;
+            _context10.next = 3;
+            return _fruits["default"].updateOne({
+              name: req.body.fruitName
+            }, // Filter
+            {
+              $set: {
+                quantity: req.body.newQuantity
+              }
+            } // Update
+            );
+
+          case 3:
+            result = _context10.sent;
+            return _context10.abrupt("return", result.acknowledged);
+
+          case 7:
+            _context10.prev = 7;
+            _context10.t0 = _context10["catch"](0);
+            console.log(_context10.t0);
+
+          case 10:
+          case "end":
+            return _context10.stop();
+        }
+      }
+    }, _callee10, null, [[0, 7]]);
+  }));
+  return _changeQuantity.apply(this, arguments);
 }

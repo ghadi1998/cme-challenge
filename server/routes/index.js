@@ -12,6 +12,7 @@ import {
   buyFruits,
   getAllTransactionsAdmin,
   getUserTransactions,
+  changeQuantity,
 } from "../controllers/user-controller";
 
 // Register a new User
@@ -45,4 +46,13 @@ router.post(
   }
 );
 
+router.post(
+  "/changeFruitQuantity",
+  verifyUserToken,
+  IsAdmin,
+  async (req, res) => {
+    const updateObj = await changeQuantity(req, res);
+    res.status(200).send("Update status : " + " " + updateObj);
+  }
+);
 export default router;

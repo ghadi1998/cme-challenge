@@ -20,7 +20,7 @@ connect(db, function (err) {
 exports.register = async (req, res) => {
   const foundUser = await User.findOne({ email: req.body.email }).exec();
   if (foundUser) {
-    res.status(401).send("user exists");
+    res.status(401).send("user does not exist");
   } else {
     //Hash password
     const salt = await genSalt(10);
@@ -116,7 +116,6 @@ exports.buyFruits = async (req, res) => {
           quantity: quantity,
         });
 
-        console.log(newTransaction);
         await insertUserTransaction(userId, newTransaction);
 
         return res.status(201).send(cart);
@@ -131,7 +130,7 @@ exports.buyFruits = async (req, res) => {
           fruitType: name,
           quantity: quantity,
         });
-        console.log(newTransaction);
+
         await insertUserTransaction(userId, newTransaction);
         return res.status(201).send(newCart);
       }
@@ -185,3 +184,16 @@ export async function getUserTransactions(req, res) {
     console.log(err);
   }
 }
+
+export async function changeQuantity(req, res) {
+  try {
+    const result = await fruits.updateOne(
+      { name: req.body.fruitName }, // Filter
+      { $set: { quantity: req.body.newQuantity } } // Update
+    );
+    return result.acknowledged;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
