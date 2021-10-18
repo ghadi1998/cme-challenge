@@ -16,7 +16,8 @@ var userSchema = new Schema({
   name: String,
   user_type_id: Number,
   transactions: {
-    type: [Transaction]
+    type: [Transaction],
+    "default": undefined
   }
 });
 

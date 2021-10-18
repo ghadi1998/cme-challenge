@@ -10,8 +10,8 @@ import {
   adminEvent,
   getFruits,
   buyFruits,
-  getAllTransactions,
-  getMyTransactions,
+  getAllTransactionsAdmin,
+  getUserTransactions,
 } from "../controllers/user-controller";
 
 // Register a new User
@@ -31,10 +31,18 @@ router.post(
   "/get-all-transactions",
   verifyUserToken,
   IsAdmin,
-  getAllTransactions
+  getAllTransactionsAdmin
 );
 
 //Auth Admin only
-//router.post("/get-my-transactions", verifyUserToken, IsUser, getMyTransactions);
+router.post(
+  "/get-my-transactions",
+  verifyUserToken,
+  IsUser,
+  async (req, res) => {
+    const result = await getUserTransactions(req);
+    res.send(result);
+  }
+);
 
 export default router;

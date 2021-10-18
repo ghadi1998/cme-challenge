@@ -5,9 +5,10 @@ var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefau
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.getAllTransactions = getAllTransactions;
+exports.getAllTransactionsAdmin = getAllTransactionsAdmin;
 exports.getFruits = getFruits;
-exports.getFruitsByName = getFruitsByName;
+exports.getStock = getStock;
+exports.getUserTransactions = getUserTransactions;
 exports.insertUserTransaction = insertUserTransaction;
 exports.login = login;
 
@@ -184,7 +185,7 @@ function _login() {
                 }, _callee3);
               }));
 
-              return function (_x18, _x19) {
+              return function (_x16, _x17) {
                 return _ref3.apply(this, arguments);
               };
             }());
@@ -248,13 +249,13 @@ exports.buyFruits = /*#__PURE__*/function () {
 
             _context2.prev = 2;
             _context2.next = 5;
-            return getFruitsByName(name, quantity, res);
+            return getStock(name, quantity, res);
 
           case 5:
             result = _context2.sent;
 
             if (result) {
-              _context2.next = 29;
+              _context2.next = 37;
               break;
             }
 
@@ -267,7 +268,7 @@ exports.buyFruits = /*#__PURE__*/function () {
             cart = _context2.sent;
 
             if (!cart) {
-              _context2.next = 21;
+              _context2.next = 25;
               break;
             }
 
@@ -296,16 +297,24 @@ exports.buyFruits = /*#__PURE__*/function () {
 
           case 15:
             cart = _context2.sent;
-            newTransaction = _transactions["default"].create({
+            _context2.next = 18;
+            return _transactions["default"].create({
               transactionUser: userId,
               fruitType: name,
               quantity: quantity
             });
-            insertUserTransaction(userId, newTransaction);
+
+          case 18:
+            newTransaction = _context2.sent;
+            console.log(newTransaction);
+            _context2.next = 22;
+            return insertUserTransaction(userId, newTransaction);
+
+          case 22:
             return _context2.abrupt("return", res.status(201).send(cart));
 
-          case 21:
-            _context2.next = 23;
+          case 25:
+            _context2.next = 27;
             return _cart["default"].create({
               userId: userId,
               products: [{
@@ -316,39 +325,47 @@ exports.buyFruits = /*#__PURE__*/function () {
               }]
             });
 
-          case 23:
+          case 27:
             newCart = _context2.sent;
-            _newTransaction = transactionSchema.create({
+            _context2.next = 30;
+            return _transactions["default"].create({
               transactionUser: userId,
               fruitType: name,
               quantity: quantity
             });
-            insertUserTransaction(userId, _newTransaction);
-            return _context2.abrupt("return", res.status(201).send(newCart));
-
-          case 27:
-            _context2.next = 30;
-            break;
-
-          case 29:
-            return _context2.abrupt("return", res.status(403).send("no supply found"));
 
           case 30:
-            _context2.next = 36;
+            _newTransaction = _context2.sent;
+            console.log(_newTransaction);
+            _context2.next = 34;
+            return insertUserTransaction(userId, _newTransaction);
+
+          case 34:
+            return _context2.abrupt("return", res.status(201).send(newCart));
+
+          case 35:
+            _context2.next = 38;
             break;
 
-          case 32:
-            _context2.prev = 32;
+          case 37:
+            return _context2.abrupt("return", res.status(403).send("no supply found"));
+
+          case 38:
+            _context2.next = 44;
+            break;
+
+          case 40:
+            _context2.prev = 40;
             _context2.t0 = _context2["catch"](2);
             console.log(_context2.t0);
             res.status(500).send("Something went wrong");
 
-          case 36:
+          case 44:
           case "end":
             return _context2.stop();
         }
       }
-    }, _callee2, null, [[2, 32]]);
+    }, _callee2, null, [[2, 40]]);
   }));
 
   return function (_x8, _x9) {
@@ -356,12 +373,12 @@ exports.buyFruits = /*#__PURE__*/function () {
   };
 }();
 
-function getAllTransactions(_x10, _x11, _x12) {
-  return _getAllTransactions.apply(this, arguments);
+function getAllTransactionsAdmin() {
+  return _getAllTransactionsAdmin.apply(this, arguments);
 }
 
-function _getAllTransactions() {
-  _getAllTransactions = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee6(req, res, next) {
+function _getAllTransactionsAdmin() {
+  _getAllTransactionsAdmin = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee6() {
     var result;
     return _regenerator["default"].wrap(function _callee6$(_context6) {
       while (1) {
@@ -369,7 +386,7 @@ function _getAllTransactions() {
           case 0:
             _context6.prev = 0;
             _context6.next = 3;
-            return transactions.find().exec();
+            return _transactions["default"].find().exec();
 
           case 3:
             result = _context6.sent;
@@ -397,15 +414,15 @@ function _getAllTransactions() {
       }
     }, _callee6, null, [[0, 8]]);
   }));
-  return _getAllTransactions.apply(this, arguments);
+  return _getAllTransactionsAdmin.apply(this, arguments);
 }
 
-function getFruitsByName(_x13, _x14, _x15) {
-  return _getFruitsByName.apply(this, arguments);
+function getStock(_x10, _x11) {
+  return _getStock.apply(this, arguments);
 }
 
-function _getFruitsByName() {
-  _getFruitsByName = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee7(name, quantity, res) {
+function _getStock() {
+  _getStock = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee7(name, quantity) {
     var result, newRes;
     return _regenerator["default"].wrap(function _callee7$(_context7) {
       while (1) {
@@ -435,15 +452,16 @@ function _getFruitsByName() {
       }
     }, _callee7, null, [[0, 9]]);
   }));
-  return _getFruitsByName.apply(this, arguments);
+  return _getStock.apply(this, arguments);
 }
 
-function insertUserTransaction(_x16, _x17) {
+function insertUserTransaction(_x12, _x13) {
   return _insertUserTransaction.apply(this, arguments);
 }
 
 function _insertUserTransaction() {
   _insertUserTransaction = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee8(userId, transaction) {
+    var result;
     return _regenerator["default"].wrap(function _callee8$(_context8) {
       while (1) {
         switch (_context8.prev = _context8.next) {
@@ -452,26 +470,68 @@ function _insertUserTransaction() {
             _context8.next = 3;
             return _userModel["default"].find({
               _id: userId
-            }).then(function (result) {
-              result[0].transactions.push(transaction);
-              console.log(" This is the insertUserTransaction", result[0]);
-            });
+            }).exec();
 
           case 3:
-            _context8.next = 8;
+            result = _context8.sent;
+            _context8.next = 6;
+            return result[0].transactions.push(transaction);
+
+          case 6:
+            result[0].save();
+            console.log(result[0]);
+            _context8.next = 13;
             break;
 
-          case 5:
-            _context8.prev = 5;
+          case 10:
+            _context8.prev = 10;
             _context8.t0 = _context8["catch"](0);
             console.log(_context8.t0);
 
-          case 8:
+          case 13:
           case "end":
             return _context8.stop();
         }
       }
-    }, _callee8, null, [[0, 5]]);
+    }, _callee8, null, [[0, 10]]);
   }));
   return _insertUserTransaction.apply(this, arguments);
+}
+
+function getUserTransactions(_x14, _x15) {
+  return _getUserTransactions.apply(this, arguments);
+}
+
+function _getUserTransactions() {
+  _getUserTransactions = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee9(req, res) {
+    var userId, result;
+    return _regenerator["default"].wrap(function _callee9$(_context9) {
+      while (1) {
+        switch (_context9.prev = _context9.next) {
+          case 0:
+            _context9.prev = 0;
+            userId = req.user.id;
+            _context9.next = 4;
+            return _userModel["default"].find({
+              _id: userId
+            }).exec();
+
+          case 4:
+            result = _context9.sent;
+            console.log(result[0].transactions);
+            return _context9.abrupt("return", result[0].transactions);
+
+          case 9:
+            _context9.prev = 9;
+            _context9.t0 = _context9["catch"](0);
+            console.log(_context9.t0);
+
+          case 12:
+          case "end":
+            return _context9.stop();
+        }
+      }
+    }, _callee9, null, [[0, 9]]);
+  }));
+  return _getUserTransactions.apply(this, arguments);
 }

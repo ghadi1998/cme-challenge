@@ -89,7 +89,7 @@ exports.buyFruits = async (req, res) => {
   const userId = req.user.id; //TODO: the logged in user id
 
   try {
-    const result = await getFruitsByName(name, quantity, res);
+    const result = await getStock(name, quantity, res);
     if (!result) {
       let cart = await Cart.findOne({ userId });
 
@@ -109,13 +109,15 @@ exports.buyFruits = async (req, res) => {
           cart.products.push({ productId, quantity, name, price });
         }
         cart = await cart.save();
-        const newTransaction = Transaction.create({
+
+        const newTransaction = await Transaction.create({
           transactionUser: userId,
           fruitType: name,
           quantity: quantity,
         });
 
-        insertUserTransaction(userId, newTransaction);
+        console.log(newTransaction);
+        await insertUserTransaction(userId, newTransaction);
 
         return res.status(201).send(cart);
       } else {
@@ -124,14 +126,13 @@ exports.buyFruits = async (req, res) => {
           userId,
           products: [{ productId, quantity, name, price }],
         });
-
-        const newTransaction = transactionSchema.create({
+        const newTransaction = await Transaction.create({
           transactionUser: userId,
           fruitType: name,
           quantity: quantity,
         });
-
-        insertUserTransaction(userId, newTransaction);
+        console.log(newTransaction);
+        await insertUserTransaction(userId, newTransaction);
         return res.status(201).send(newCart);
       }
     } else {
@@ -143,16 +144,16 @@ exports.buyFruits = async (req, res) => {
   }
 };
 
-export async function getAllTransactions(req, res, next) {
+export async function getAllTransactionsAdmin() {
   try {
-    const result = await transactions.find().exec();
+    const result = await Transaction.find().exec();
     if (result) return truee;
   } catch (err) {
     console.log(err);
   }
 }
 
-export async function getFruitsByName(name, quantity, res) {
+export async function getStock(name, quantity) {
   try {
     const result = await fruits.find({ name: name }).exec();
     let newRes = quantity > result[0].quantity ? true : false;
@@ -165,10 +166,21 @@ export async function getFruitsByName(name, quantity, res) {
 
 export async function insertUserTransaction(userId, transaction) {
   try {
-    const result = await User.find({ _id: userId }).then((result) => {
-      result[0].transactions.push(transaction);
-      console.log(" This is the insertUserTransaction", result[0]);
-    });
+    const result = await User.find({ _id: userId }).exec();
+    await result[0].transactions.push(transaction);
+    result[0].save();
+    console.log(result[0]);
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+export async function getUserTransactions(req, res) {
+  try {
+    const userId = req.user.id;
+    const result = await User.find({ _id: userId }).exec();
+    console.log(result[0].transactions);
+    return result[0].transactions;
   } catch (err) {
     console.log(err);
   }

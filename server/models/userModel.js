@@ -8,7 +8,10 @@ const userSchema = new Schema({
   password: String,
   name: String,
   user_type_id: Number,
-  transactions: { type: [Transaction] },
+  transactions: {
+    type: [Transaction],
+    default: undefined,
+  },
 });
 
 export default model("user", userSchema, "users");
