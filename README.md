@@ -1,12 +1,19 @@
 # cme-challenge
-This is a NodeJs backend single microservice.
-The backend server is ExpressJS framework.
-The database is MongoDb.
-Language used : Javascript es6 - Could have used TS also
-Tools used : Babel for transpiling from es6 to common js
+This is a NodeJs backend single microservice. /n
 
-To launche this app : 
+The backend server is ExpressJS framework. /n
 
-Install npm in the main project directory , outside the server folder
-Then run this : npm run watch:dev 
+The database is MongoDb. /n
+
+Language used : Javascript es6 - Could have used TS also /n
+
+Tools used : Babel for transpiling from es6 to common js /n
+
+
+To launche this app : /n
+
+Install npm in the main project directory , outside the server folder/n
+
+Then run this : npm run watch:dev /n
+
 
