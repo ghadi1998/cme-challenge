@@ -7,6 +7,11 @@ import User from "../models/userModel";
 import fruits from "../models/fruits";
 import Cart from "../models/cart";
 import Transaction from "../models/transactions";
+import {
+  getStock,
+  insertUserTransaction,
+  getMyTransactions,
+} from "../controllers/helpers/index";
 
 // Connect to DB
 const db = DB_HOST;
@@ -18,7 +23,6 @@ connect(db, function (err) {
   }
 });
 
-
 //   Payload = {
 //  "email": "xyz@gmail.com",
 //   "password": "xyz",
@@ -29,7 +33,7 @@ export async function register(req, res) {
   //Check wether the body is empty or undefined
   if (isEmpty(req.body)) {
     res.status(400).send("Body Is Missing");
-  //Check if the user_type_id is valid , either 0 or 1
+    //Check if the user_type_id is valid , either 0 or 1
   } else if (req.body.user_type_id != 0 && req.body.user_type_id != 1) {
     res.status(400).send("User Type ID can be only 0 or 1");
   } else if (req.body.user_type_id === 1) {
@@ -74,7 +78,6 @@ export async function register(req, res) {
     }
   }
 }
-
 
 // Payload = {
 // "email": "xyz@gmail.com",
@@ -187,35 +190,4 @@ exports.buyFruits = async (req, res) => {
 };
 
 
-export async function getStock(name, quantity) {
-  try {
-    const result = await fruits.find({ name: name }).exec();
-    let newRes = quantity > result[0].quantity ? true : false;
-    console.log(newRes);
-    return newRes;
-  } catch (err) {
-    console.log(err);
-  }
-}
 
-export async function insertUserTransaction(userId, transaction) {
-  try {
-    const result = await User.find({ _id: userId }).exec();
-    await result[0].transactions.push(transaction);
-    result[0].save();
-    console.log(result[0]);
-  } catch (err) {
-    console.log(err);
-  }
-}
-
-export async function getMyTransactions(req) {
-  try {
-    const userId = req.user.id;
-    const result = await User.find({ _id: userId }).exec();
-    console.log(result[0].transactions);
-    return result[0].transactions;
-  } catch (err) {
-    console.log(err);
-  }
-}

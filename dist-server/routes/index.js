@@ -17,6 +17,8 @@ var _userController = require("../controllers/user-controller");
 
 var _adminController = require("../controllers/admin-controller");
 
+var _index = require("../controllers/helpers/index");
+
 var router = require("express").Router();
 
 //Register a new User - Admin and
@@ -81,23 +83,6 @@ router.post("/buyFruits", _authMiddleware.verifyUserToken, _authMiddleware.IsUse
 //     "transactionTime": "2021-10-14T13:18:54.165Z",
 //     "__v": 0
 // },
-// {
-//     "_id": "61682e3f4529a31d878457dc",
-//     "transactionUser": "6166d99fc19eb7eb57567902",
-//     "fruitType": "apples",
-//     "quantity": 4,
-//     "transactionTime": "2021-10-14T13:18:55.085Z",
-//     "__v": 0
-// },
-// {
-//     "_id": "61684396657da06078d117a5",
-//     "transactionUser": "6166d99fc19eb7eb57567902",
-//     "fruitType": "bananas",
-//     "quantity": 2,
-//     "transactionTime": "2021-10-14T14:49:58.753Z",
-//     "__v": 0
-// },
-// }
 
 router.post("/get-all-transactions", _authMiddleware.verifyUserToken, _authMiddleware.IsAdmin, /*#__PURE__*/function () {
   var _ref = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee(re, res) {
@@ -132,23 +117,7 @@ router.post("/get-all-transactions", _authMiddleware.verifyUserToken, _authMiddl
 //   "_id": "616d4d094c9089503423af75",
 //   "transactionTime": "2021-10-18T10:31:37.290Z",
 //   "__v": 0
-// },
-// {
-//   "transactionUser": "6166d99fc19eb7eb57567902",
-//   "fruitType": "strawberry",
-//   "quantity": 1,
-//   "_id": "616d4d0a4c9089503423af7d",
-//   "transactionTime": "2021-10-18T10:31:38.020Z",
-//   "__v": 0
-// },
-// {
-//   "transactionUser": "6166d99fc19eb7eb57567902",
-//   "fruitType": "strawberry",
-//   "quantity": 1,
-//   "_id": "616d4d0a4c9089503423af85",
-//   "transactionTime": "2021-10-18T10:31:38.611Z",
-//   "__v": 0
-// },
+// }
 
 router.post("/get-my-transactions", _authMiddleware.verifyUserToken, _authMiddleware.IsUser, /*#__PURE__*/function () {
   var _ref2 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee2(req, res) {
@@ -158,7 +127,7 @@ router.post("/get-my-transactions", _authMiddleware.verifyUserToken, _authMiddle
         switch (_context2.prev = _context2.next) {
           case 0:
             _context2.next = 2;
-            return (0, _userController.getMyTransactions)(req);
+            return (0, _index.getMyTransactions)(req);
 
           case 2:
             result = _context2.sent;
@@ -181,9 +150,6 @@ router.post("/get-my-transactions", _authMiddleware.verifyUserToken, _authMiddle
 //     "fruitName":"bananas",
 //     "newQuantity":"11"
 // }
-//Response {
-// Update status : true --if true
-//}
 
 router.post("/changeFruitQuantity", _authMiddleware.verifyUserToken, _authMiddleware.IsAdmin, /*#__PURE__*/function () {
   var _ref3 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee3(req, res) {

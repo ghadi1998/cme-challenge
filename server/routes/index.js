@@ -10,7 +10,6 @@ import {
   login,
   getFruits,
   buyFruits,
-  getMyTransactions,
 } from "../controllers/user-controller";
 
 import {
@@ -19,6 +18,8 @@ import {
   getAllTransactionsOfUser,
 } from "../controllers/admin-controller";
 
+import { getMyTransactions } from "../controllers/helpers/index";
+ 
 //Register a new User - Admin and
 //Response : 
 //
@@ -86,23 +87,6 @@ router.post("/buyFruits", verifyUserToken, IsUser, buyFruits);
 //     "transactionTime": "2021-10-14T13:18:54.165Z",
 //     "__v": 0
 // },
-// {
-//     "_id": "61682e3f4529a31d878457dc",
-//     "transactionUser": "6166d99fc19eb7eb57567902",
-//     "fruitType": "apples",
-//     "quantity": 4,
-//     "transactionTime": "2021-10-14T13:18:55.085Z",
-//     "__v": 0
-// },
-// {
-//     "_id": "61684396657da06078d117a5",
-//     "transactionUser": "6166d99fc19eb7eb57567902",
-//     "fruitType": "bananas",
-//     "quantity": 2,
-//     "transactionTime": "2021-10-14T14:49:58.753Z",
-//     "__v": 0
-// },
-// }
 router.post(
   "/get-all-transactions",
   verifyUserToken,
@@ -121,23 +105,7 @@ router.post(
 //   "_id": "616d4d094c9089503423af75",
 //   "transactionTime": "2021-10-18T10:31:37.290Z",
 //   "__v": 0
-// },
-// {
-//   "transactionUser": "6166d99fc19eb7eb57567902",
-//   "fruitType": "strawberry",
-//   "quantity": 1,
-//   "_id": "616d4d0a4c9089503423af7d",
-//   "transactionTime": "2021-10-18T10:31:38.020Z",
-//   "__v": 0
-// },
-// {
-//   "transactionUser": "6166d99fc19eb7eb57567902",
-//   "fruitType": "strawberry",
-//   "quantity": 1,
-//   "_id": "616d4d0a4c9089503423af85",
-//   "transactionTime": "2021-10-18T10:31:38.611Z",
-//   "__v": 0
-// },
+// }
 router.post(
   "/get-my-transactions",
   verifyUserToken,
@@ -154,10 +122,6 @@ router.post(
 //     "fruitName":"bananas",
 //     "newQuantity":"11"
 // }
-
-//Response {
-// Update status : true --if true
-//}
 router.post(
   "/changeFruitQuantity",
   verifyUserToken,
