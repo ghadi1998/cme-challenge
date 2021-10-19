@@ -7,6 +7,7 @@ import User from "../models/userModel";
 import fruits from "../models/fruits";
 import Cart from "../models/cart";
 import Transaction from "../models/transactions";
+import transactions from "../models/transactions";
 
 // Connect to DB
 const db = DB_HOST;

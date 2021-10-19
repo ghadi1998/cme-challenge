@@ -10,7 +10,7 @@ const userSchema = new Schema({
   user_type_id: Number,
   transactions: {
     type: [Transaction],
-    default: undefined,
+    default: [],
   },
 });
 
