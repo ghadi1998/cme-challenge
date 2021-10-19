@@ -7,7 +7,6 @@ import User from "../models/userModel";
 import fruits from "../models/fruits";
 import Cart from "../models/cart";
 import Transaction from "../models/transactions";
-import transactions from "../models/transactions";
 
 // Connect to DB
 const db = DB_HOST;
@@ -19,14 +18,14 @@ connect(db, function (err) {
   }
 });
 
-exports.register = async (req, res) => {
-  console.log(req.body);
+export async function register(req, res) {
   if (isEmpty(req.body)) {
     res.status(400).send("Body Is Missing");
   } else if (req.body.user_type_id != 0 && req.body.user_type_id != 1) {
     res.status(400).send("User Type ID can be only 0 or 1");
   } else if (req.body.user_type_id === 1) {
     const allUsers = await User.find().exec();
+
     for (let i = 0; i < allUsers.length; i++) {
       if (allUsers[i].user_type_id === 1)
         res.status(400).send("Only one admin can register");
@@ -39,7 +38,6 @@ exports.register = async (req, res) => {
       //Hash password
       const salt = await genSalt(10);
       const hasPassword = await hash(req.body.password, salt);
-
       // Create an user object
       let user = new User({
         email: req.body.email,
@@ -65,7 +63,7 @@ exports.register = async (req, res) => {
       });
     }
   }
-};
+}
 
 export async function login(req, res) {
   User.findOne({ email: req.body.email }, async (err, user) => {
@@ -158,15 +156,6 @@ exports.buyFruits = async (req, res) => {
   }
 };
 
-export async function getAllTransactionsAdmin() {
-  try {
-    const result = await Transaction.find().exec();
-    if (result) return truee;
-  } catch (err) {
-    console.log(err);
-  }
-}
-
 export async function getStock(name, quantity) {
   try {
     const result = await fruits.find({ name: name }).exec();
@@ -189,7 +178,7 @@ export async function insertUserTransaction(userId, transaction) {
   }
 }
 
-export async function getUserTransactions(req, res) {
+export async function getMyTransactions(req) {
   try {
     const userId = req.user.id;
     const result = await User.find({ _id: userId }).exec();
@@ -199,17 +188,3 @@ export async function getUserTransactions(req, res) {
     console.log(err);
   }
 }
-
-export async function changeQuantity(req, res) {
-  try {
-    const result = await fruits.updateOne(
-      { name: req.body.fruitName }, // Filter
-      { $set: { quantity: req.body.newQuantity } } // Update
-    );
-    return result.acknowledged;
-  } catch (err) {
-    console.log(err);
-  }
-}
-
-async function getPayload(req) {}

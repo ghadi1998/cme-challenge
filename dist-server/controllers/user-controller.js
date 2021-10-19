@@ -5,13 +5,12 @@ var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefau
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.changeQuantity = changeQuantity;
-exports.getAllTransactionsAdmin = getAllTransactionsAdmin;
 exports.getFruits = getFruits;
+exports.getMyTransactions = getMyTransactions;
 exports.getStock = getStock;
-exports.getUserTransactions = getUserTransactions;
 exports.insertUserTransaction = insertUserTransaction;
 exports.login = login;
+exports.register = register;
 
 var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
 
@@ -45,82 +44,84 @@ var db = _config.DB_HOST;
   }
 });
 
-exports.register = /*#__PURE__*/function () {
-  var _ref = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee(req, res) {
-    var allUsers, i, foundUser, salt, hasPassword, user, result;
-    return _regenerator["default"].wrap(function _callee$(_context) {
-      while (1) {
-        switch (_context.prev = _context.next) {
-          case 0:
-            console.log(req.body);
+function register(_x, _x2) {
+  return _register.apply(this, arguments);
+}
 
+function _register() {
+  _register = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee2(req, res) {
+    var allUsers, i, foundUser, salt, hasPassword, user, result;
+    return _regenerator["default"].wrap(function _callee2$(_context2) {
+      while (1) {
+        switch (_context2.prev = _context2.next) {
+          case 0:
             if (!(0, _lodash.isEmpty)(req.body)) {
-              _context.next = 5;
+              _context2.next = 4;
               break;
             }
 
             res.status(400).send("Body Is Missing");
-            _context.next = 32;
+            _context2.next = 31;
             break;
 
-          case 5:
+          case 4:
             if (!(req.body.user_type_id != 0 && req.body.user_type_id != 1)) {
-              _context.next = 9;
+              _context2.next = 8;
               break;
             }
 
             res.status(400).send("User Type ID can be only 0 or 1");
-            _context.next = 32;
+            _context2.next = 31;
             break;
 
-          case 9:
+          case 8:
             if (!(req.body.user_type_id === 1)) {
-              _context.next = 16;
+              _context2.next = 15;
               break;
             }
 
-            _context.next = 12;
+            _context2.next = 11;
             return _userModel["default"].find().exec();
 
-          case 12:
-            allUsers = _context.sent;
+          case 11:
+            allUsers = _context2.sent;
 
             for (i = 0; i < allUsers.length; i++) {
               if (allUsers[i].user_type_id === 1) res.status(400).send("Only one admin can register");
             }
 
-            _context.next = 32;
+            _context2.next = 31;
             break;
 
-          case 16:
-            _context.next = 18;
+          case 15:
+            _context2.next = 17;
             return _userModel["default"].findOne({
               email: req.body.email
             }).exec();
 
-          case 18:
-            foundUser = _context.sent;
+          case 17:
+            foundUser = _context2.sent;
 
             if (!foundUser) {
-              _context.next = 23;
+              _context2.next = 22;
               break;
             }
 
             res.status(401).send("user exists");
-            _context.next = 32;
+            _context2.next = 31;
             break;
 
-          case 23:
-            _context.next = 25;
+          case 22:
+            _context2.next = 24;
             return (0, _bcryptjs.genSalt)(10);
 
-          case 25:
-            salt = _context.sent;
-            _context.next = 28;
+          case 24:
+            salt = _context2.sent;
+            _context2.next = 27;
             return (0, _bcryptjs.hash)(req.body.password, salt);
 
-          case 28:
-            hasPassword = _context.sent;
+          case 27:
+            hasPassword = _context2.sent;
             // Create an user object
             user = new _userModel["default"]({
               email: req.body.email,
@@ -146,18 +147,15 @@ exports.register = /*#__PURE__*/function () {
               }
             });
 
-          case 32:
+          case 31:
           case "end":
-            return _context.stop();
+            return _context2.stop();
         }
       }
-    }, _callee);
+    }, _callee2);
   }));
-
-  return function (_x, _x2) {
-    return _ref.apply(this, arguments);
-  };
-}();
+  return _register.apply(this, arguments);
+}
 
 function login(_x3, _x4) {
   return _login.apply(this, arguments);
@@ -172,7 +170,7 @@ function _login() {
             _userModel["default"].findOne({
               email: req.body.email
             }, /*#__PURE__*/function () {
-              var _ref3 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee3(err, user) {
+              var _ref2 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee3(err, user) {
                 var validPass, payload, token;
                 return _regenerator["default"].wrap(function _callee3$(_context3) {
                   while (1) {
@@ -230,8 +228,8 @@ function _login() {
                 }, _callee3);
               }));
 
-              return function (_x19, _x20) {
-                return _ref3.apply(this, arguments);
+              return function (_x15, _x16) {
+                return _ref2.apply(this, arguments);
               };
             }());
 
@@ -282,38 +280,38 @@ function _getFruits() {
 }
 
 exports.buyFruits = /*#__PURE__*/function () {
-  var _ref2 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee2(req, res) {
+  var _ref = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee(req, res) {
     var _req$body, productId, quantity, name, price, userId, result, cart, itemIndex, productItem, newTransaction, newCart, _newTransaction;
 
-    return _regenerator["default"].wrap(function _callee2$(_context2) {
+    return _regenerator["default"].wrap(function _callee$(_context) {
       while (1) {
-        switch (_context2.prev = _context2.next) {
+        switch (_context.prev = _context.next) {
           case 0:
             _req$body = req.body, productId = _req$body.productId, quantity = _req$body.quantity, name = _req$body.name, price = _req$body.price;
             userId = req.user.id; //TODO: the logged in user id
 
-            _context2.prev = 2;
-            _context2.next = 5;
+            _context.prev = 2;
+            _context.next = 5;
             return getStock(name, quantity, res);
 
           case 5:
-            result = _context2.sent;
+            result = _context.sent;
 
             if (result) {
-              _context2.next = 35;
+              _context.next = 35;
               break;
             }
 
-            _context2.next = 9;
+            _context.next = 9;
             return _cart["default"].findOne({
               userId: userId
             });
 
           case 9:
-            cart = _context2.sent;
+            cart = _context.sent;
 
             if (!cart) {
-              _context2.next = 24;
+              _context.next = 24;
               break;
             }
 
@@ -337,12 +335,12 @@ exports.buyFruits = /*#__PURE__*/function () {
               });
             }
 
-            _context2.next = 15;
+            _context.next = 15;
             return cart.save();
 
           case 15:
-            cart = _context2.sent;
-            _context2.next = 18;
+            cart = _context.sent;
+            _context.next = 18;
             return _transactions["default"].create({
               transactionUser: userId,
               fruitType: name,
@@ -350,15 +348,15 @@ exports.buyFruits = /*#__PURE__*/function () {
             });
 
           case 18:
-            newTransaction = _context2.sent;
-            _context2.next = 21;
+            newTransaction = _context.sent;
+            _context.next = 21;
             return insertUserTransaction(userId, newTransaction);
 
           case 21:
-            return _context2.abrupt("return", res.status(201).send(cart));
+            return _context.abrupt("return", res.status(201).send(cart));
 
           case 24:
-            _context2.next = 26;
+            _context.next = 26;
             return _cart["default"].create({
               userId: userId,
               products: [{
@@ -370,8 +368,8 @@ exports.buyFruits = /*#__PURE__*/function () {
             });
 
           case 26:
-            newCart = _context2.sent;
-            _context2.next = 29;
+            newCart = _context.sent;
+            _context.next = 29;
             return _transactions["default"].create({
               transactionUser: userId,
               fruitType: name,
@@ -379,121 +377,77 @@ exports.buyFruits = /*#__PURE__*/function () {
             });
 
           case 29:
-            _newTransaction = _context2.sent;
-            _context2.next = 32;
+            _newTransaction = _context.sent;
+            _context.next = 32;
             return insertUserTransaction(userId, _newTransaction);
 
           case 32:
-            return _context2.abrupt("return", res.status(201).send(newCart));
+            return _context.abrupt("return", res.status(201).send(newCart));
 
           case 33:
-            _context2.next = 36;
+            _context.next = 36;
             break;
 
           case 35:
-            return _context2.abrupt("return", res.status(403).send("no supply found"));
+            return _context.abrupt("return", res.status(403).send("no supply found"));
 
           case 36:
-            _context2.next = 42;
+            _context.next = 42;
             break;
 
           case 38:
-            _context2.prev = 38;
-            _context2.t0 = _context2["catch"](2);
-            console.log(_context2.t0);
+            _context.prev = 38;
+            _context.t0 = _context["catch"](2);
+            console.log(_context.t0);
             res.status(500).send("Something went wrong");
 
           case 42:
           case "end":
-            return _context2.stop();
+            return _context.stop();
         }
       }
-    }, _callee2, null, [[2, 38]]);
+    }, _callee, null, [[2, 38]]);
   }));
 
   return function (_x8, _x9) {
-    return _ref2.apply(this, arguments);
+    return _ref.apply(this, arguments);
   };
 }();
-
-function getAllTransactionsAdmin() {
-  return _getAllTransactionsAdmin.apply(this, arguments);
-}
-
-function _getAllTransactionsAdmin() {
-  _getAllTransactionsAdmin = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee6() {
-    var result;
-    return _regenerator["default"].wrap(function _callee6$(_context6) {
-      while (1) {
-        switch (_context6.prev = _context6.next) {
-          case 0:
-            _context6.prev = 0;
-            _context6.next = 3;
-            return _transactions["default"].find().exec();
-
-          case 3:
-            result = _context6.sent;
-
-            if (!result) {
-              _context6.next = 6;
-              break;
-            }
-
-            return _context6.abrupt("return", truee);
-
-          case 6:
-            _context6.next = 11;
-            break;
-
-          case 8:
-            _context6.prev = 8;
-            _context6.t0 = _context6["catch"](0);
-            console.log(_context6.t0);
-
-          case 11:
-          case "end":
-            return _context6.stop();
-        }
-      }
-    }, _callee6, null, [[0, 8]]);
-  }));
-  return _getAllTransactionsAdmin.apply(this, arguments);
-}
 
 function getStock(_x10, _x11) {
   return _getStock.apply(this, arguments);
 }
 
 function _getStock() {
-  _getStock = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee7(name, quantity) {
+  _getStock = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee6(name, quantity) {
     var result, newRes;
-    return _regenerator["default"].wrap(function _callee7$(_context7) {
+    return _regenerator["default"].wrap(function _callee6$(_context6) {
       while (1) {
-        switch (_context7.prev = _context7.next) {
+        switch (_context6.prev = _context6.next) {
           case 0:
-            _context7.prev = 0;
-            _context7.next = 3;
+            _context6.prev = 0;
+            _context6.next = 3;
             return _fruits["default"].find({
               name: name
             }).exec();
 
           case 3:
-            result = _context7.sent;
+            result = _context6.sent;
             newRes = quantity > result[0].quantity ? true : false;
             console.log(newRes);
-            return _context7.abrupt("return", newRes);
+            return _context6.abrupt("return", newRes);
 
           case 9:
-            _context7.prev = 9;
-            _context7.t0 = _context7["catch"](0);
-            console.log(_context7.t0);
+            _context6.prev = 9;
+            _context6.t0 = _context6["catch"](0);
+            console.log(_context6.t0);
 
           case 12:
           case "end":
-            return _context7.stop();
+            return _context6.stop();
         }
       }
-    }, _callee7, null, [[0, 9]]);
+    }, _callee6, null, [[0, 9]]);
   }));
   return _getStock.apply(this, arguments);
 }
@@ -503,139 +457,78 @@ function insertUserTransaction(_x12, _x13) {
 }
 
 function _insertUserTransaction() {
-  _insertUserTransaction = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee8(userId, transaction) {
+  _insertUserTransaction = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee7(userId, transaction) {
     var result;
-    return _regenerator["default"].wrap(function _callee8$(_context8) {
+    return _regenerator["default"].wrap(function _callee7$(_context7) {
       while (1) {
-        switch (_context8.prev = _context8.next) {
+        switch (_context7.prev = _context7.next) {
           case 0:
-            _context8.prev = 0;
-            _context8.next = 3;
+            _context7.prev = 0;
+            _context7.next = 3;
             return _userModel["default"].find({
               _id: userId
             }).exec();
 
           case 3:
-            result = _context8.sent;
-            _context8.next = 6;
+            result = _context7.sent;
+            _context7.next = 6;
             return result[0].transactions.push(transaction);
 
           case 6:
             result[0].save();
             console.log(result[0]);
-            _context8.next = 13;
+            _context7.next = 13;
             break;
 
           case 10:
-            _context8.prev = 10;
-            _context8.t0 = _context8["catch"](0);
-            console.log(_context8.t0);
+            _context7.prev = 10;
+            _context7.t0 = _context7["catch"](0);
+            console.log(_context7.t0);
 
           case 13:
           case "end":
-            return _context8.stop();
+            return _context7.stop();
         }
       }
-    }, _callee8, null, [[0, 10]]);
+    }, _callee7, null, [[0, 10]]);
   }));
   return _insertUserTransaction.apply(this, arguments);
 }
 
-function getUserTransactions(_x14, _x15) {
-  return _getUserTransactions.apply(this, arguments);
+function getMyTransactions(_x14) {
+  return _getMyTransactions.apply(this, arguments);
 }
 
-function _getUserTransactions() {
-  _getUserTransactions = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee9(req, res) {
+function _getMyTransactions() {
+  _getMyTransactions = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee8(req) {
     var userId, result;
-    return _regenerator["default"].wrap(function _callee9$(_context9) {
+    return _regenerator["default"].wrap(function _callee8$(_context8) {
       while (1) {
-        switch (_context9.prev = _context9.next) {
+        switch (_context8.prev = _context8.next) {
           case 0:
-            _context9.prev = 0;
+            _context8.prev = 0;
             userId = req.user.id;
-            _context9.next = 4;
+            _context8.next = 4;
             return _userModel["default"].find({
               _id: userId
             }).exec();
 
           case 4:
-            result = _context9.sent;
+            result = _context8.sent;
             console.log(result[0].transactions);
-            return _context9.abrupt("return", result[0].transactions);
+            return _context8.abrupt("return", result[0].transactions);
 
           case 9:
-            _context9.prev = 9;
-            _context9.t0 = _context9["catch"](0);
-            console.log(_context9.t0);
+            _context8.prev = 9;
+            _context8.t0 = _context8["catch"](0);
+            console.log(_context8.t0);
 
           case 12:
           case "end":
-            return _context9.stop();
+            return _context8.stop();
         }
       }
-    }, _callee9, null, [[0, 9]]);
+    }, _callee8, null, [[0, 9]]);
   }));
-  return _getUserTransactions.apply(this, arguments);
-}
-
-function changeQuantity(_x16, _x17) {
-  return _changeQuantity.apply(this, arguments);
-}
-
-function _changeQuantity() {
-  _changeQuantity = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee10(req, res) {
-    var result;
-    return _regenerator["default"].wrap(function _callee10$(_context10) {
-      while (1) {
-        switch (_context10.prev = _context10.next) {
-          case 0:
-            _context10.prev = 0;
-            _context10.next = 3;
-            return _fruits["default"].updateOne({
-              name: req.body.fruitName
-            }, // Filter
-            {
-              $set: {
-                quantity: req.body.newQuantity
-              }
-            } // Update
-            );
-
-          case 3:
-            result = _context10.sent;
-            return _context10.abrupt("return", result.acknowledged);
-
-          case 7:
-            _context10.prev = 7;
-            _context10.t0 = _context10["catch"](0);
-            console.log(_context10.t0);
-
-          case 10:
-          case "end":
-            return _context10.stop();
-        }
-      }
-    }, _callee10, null, [[0, 7]]);
-  }));
-  return _changeQuantity.apply(this, arguments);
-}
-
-function getPayload(_x18) {
-  return _getPayload.apply(this, arguments);
-}
-
-function _getPayload() {
-  _getPayload = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee11(req) {
-    return _regenerator["default"].wrap(function _callee11$(_context11) {
-      while (1) {
-        switch (_context11.prev = _context11.next) {
-          case 0:
-          case "end":
-            return _context11.stop();
-        }
-      }
-    }, _callee11);
-  }));
-  return _getPayload.apply(this, arguments);
+  return _getMyTransactions.apply(this, arguments);
 }

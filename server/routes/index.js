@@ -4,30 +4,34 @@ import {
   IsAdmin,
   IsUser,
 } from "../middleware/auth-middleware";
+
 import {
   register,
   login,
-  adminEvent,
   getFruits,
   buyFruits,
-  getAllTransactionsAdmin,
-  getUserTransactions,
-  changeQuantity,
+  getMyTransactions,
 } from "../controllers/user-controller";
 
-// Register a new User
+import {
+  changeQuantity,
+  getAllTransactionsAdmin,
+  getAllTransactionsOfUser,
+} from "../controllers/admin-controller";
+
+// Register a new User - Admin and
 router.post("/register", register);
 
 // Login
 router.post("/login", login);
 
-//Auth user only
-router.post("/list-fruits", verifyUserToken, IsUser, getFruits);
+//Get and List fruits - User not client
+router.post("/list-fruits", getFruits);
 
-//Auth user only
+//Buy Fruits - Client
 router.post("/buyFruits", verifyUserToken, IsUser, buyFruits);
 
-//Auth Admin only
+//Get all transactions done - Admin
 router.post(
   "/get-all-transactions",
   verifyUserToken,
@@ -35,17 +39,18 @@ router.post(
   getAllTransactionsAdmin
 );
 
-//Auth Admin only
+//get User Transactions
 router.post(
   "/get-my-transactions",
   verifyUserToken,
   IsUser,
   async (req, res) => {
-    const result = await getUserTransactions(req);
+    const result = await getMyTransactions(req);
     res.send(result);
   }
 );
 
+//Admin change quantity
 router.post(
   "/changeFruitQuantity",
   verifyUserToken,
@@ -55,4 +60,17 @@ router.post(
     res.status(200).send(`Update status :  ${updateObj}`);
   }
 );
+
+//get User Transactions
+router.post(
+  "/get-user-transactions-by-admin",
+  verifyUserToken,
+  IsAdmin,
+  async (req, res) => {
+    const username = req.body.username;
+    const result = await getAllTransactionsOfUser(username);
+    res.send(result);
+  }
+);
+
 export default router;
