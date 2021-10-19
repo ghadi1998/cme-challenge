@@ -1,6 +1,7 @@
 import { connect, findOne, find } from "mongoose";
 import { DB_HOST, TOKEN_SECRET } from "../config/config";
 import { genSalt, hash, compare } from "bcryptjs";
+import { isEmpty } from "lodash";
 import { sign } from "jsonwebtoken";
 import User from "../models/userModel";
 import fruits from "../models/fruits";
@@ -18,37 +19,50 @@ connect(db, function (err) {
 });
 
 exports.register = async (req, res) => {
-  const foundUser = await User.findOne({ email: req.body.email }).exec();
-  if (foundUser) {
-    res.status(401).send("user does not exist");
+  console.log(req.body);
+  if (isEmpty(req.body)) {
+    res.status(400).send("Body Is Missing");
+  } else if (req.body.user_type_id != 0 && req.body.user_type_id != 1) {
+    res.status(400).send("User Type ID can be only 0 or 1");
+  } else if (req.body.user_type_id === 1) {
+    const allUsers = await User.find().exec();
+    for (let i = 0; i < allUsers.length; i++) {
+      if (allUsers[i].user_type_id === 1)
+        res.status(400).send("Only one admin can register");
+    }
   } else {
-    //Hash password
-    const salt = await genSalt(10);
-    const hasPassword = await hash(req.body.password, salt);
+    const foundUser = await User.findOne({ email: req.body.email }).exec();
+    if (foundUser) {
+      res.status(401).send("user exists");
+    } else {
+      //Hash password
+      const salt = await genSalt(10);
+      const hasPassword = await hash(req.body.password, salt);
 
-    // Create an user object
-    let user = new User({
-      email: req.body.email,
-      name: req.body.name,
-      password: hasPassword,
-      user_type_id: req.body.user_type_id,
-    });
+      // Create an user object
+      let user = new User({
+        email: req.body.email,
+        name: req.body.name,
+        password: hasPassword,
+        user_type_id: req.body.user_type_id,
+      });
 
-    // Save User in the database
-    user.save((err, registeredUser) => {
-      if (err) {
-        console.log(err);
-      } else {
-        // create payload then Generate an access token
-        let payload = {
-          id: registeredUser._id,
-          user_type_id: req.body.user_type_id || 0,
-        };
-        const token = sign(payload, TOKEN_SECRET);
-
-        res.status(200).send({ token });
-      }
-    });
+      const result = User.find();
+      // Save User in the database
+      user.save((err, registeredUser) => {
+        if (err) {
+          console.log(err);
+        } else {
+          // create payload then Generate an access token
+          let payload = {
+            id: registeredUser._id,
+            user_type_id: req.body.user_type_id || 0,
+          };
+          const token = sign(payload, TOKEN_SECRET);
+          res.status(200).send({ token });
+        }
+      });
+    }
   }
 };
 
@@ -197,3 +211,4 @@ export async function changeQuantity(req, res) {
   }
 }
 
+async function getPayload(req) {}

@@ -66,7 +66,7 @@ router.post("/changeFruitQuantity", _authMiddleware.verifyUserToken, _authMiddle
 
           case 2:
             updateObj = _context2.sent;
-            res.status(200).send("Update status : " + " " + updateObj);
+            res.status(200).send("Update status :  ".concat(updateObj));
 
           case 4:
           case "end":

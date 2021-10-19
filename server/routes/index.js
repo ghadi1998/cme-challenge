@@ -52,7 +52,7 @@ router.post(
   IsAdmin,
   async (req, res) => {
     const updateObj = await changeQuantity(req, res);
-    res.status(200).send("Update status : " + " " + updateObj);
+    res.status(200).send(`Update status :  ${updateObj}`);
   }
 );
 export default router;

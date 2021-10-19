@@ -23,6 +23,8 @@ var _config = require("../config/config");
 
 var _bcryptjs = require("bcryptjs");
 
+var _lodash = require("lodash");
+
 var _jsonwebtoken = require("jsonwebtoken");
 
 var _userModel = _interopRequireDefault(require("../models/userModel"));
@@ -45,38 +47,79 @@ var db = _config.DB_HOST;
 
 exports.register = /*#__PURE__*/function () {
   var _ref = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee(req, res) {
-    var foundUser, salt, hasPassword, user;
+    var allUsers, i, foundUser, salt, hasPassword, user, result;
     return _regenerator["default"].wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
-            _context.next = 2;
+            console.log(req.body);
+
+            if (!(0, _lodash.isEmpty)(req.body)) {
+              _context.next = 5;
+              break;
+            }
+
+            res.status(400).send("Body Is Missing");
+            _context.next = 32;
+            break;
+
+          case 5:
+            if (!(req.body.user_type_id != 0 && req.body.user_type_id != 1)) {
+              _context.next = 9;
+              break;
+            }
+
+            res.status(400).send("User Type ID can be only 0 or 1");
+            _context.next = 32;
+            break;
+
+          case 9:
+            if (!(req.body.user_type_id === 1)) {
+              _context.next = 16;
+              break;
+            }
+
+            _context.next = 12;
+            return _userModel["default"].find().exec();
+
+          case 12:
+            allUsers = _context.sent;
+
+            for (i = 0; i < allUsers.length; i++) {
+              if (allUsers[i].user_type_id === 1) res.status(400).send("Only one admin can register");
+            }
+
+            _context.next = 32;
+            break;
+
+          case 16:
+            _context.next = 18;
             return _userModel["default"].findOne({
               email: req.body.email
             }).exec();
 
-          case 2:
+          case 18:
             foundUser = _context.sent;
 
             if (!foundUser) {
-              _context.next = 7;
+              _context.next = 23;
               break;
             }
 
-            res.status(401).send("user does not exist");
-            _context.next = 15;
+            res.status(401).send("user exists");
+            _context.next = 32;
             break;
 
-          case 7:
-            _context.next = 9;
+          case 23:
+            _context.next = 25;
             return (0, _bcryptjs.genSalt)(10);
 
-          case 9:
+          case 25:
             salt = _context.sent;
-            _context.next = 12;
+            _context.next = 28;
             return (0, _bcryptjs.hash)(req.body.password, salt);
 
-          case 12:
+          case 28:
             hasPassword = _context.sent;
             // Create an user object
             user = new _userModel["default"]({
@@ -84,7 +127,8 @@ exports.register = /*#__PURE__*/function () {
               name: req.body.name,
               password: hasPassword,
               user_type_id: req.body.user_type_id
-            }); // Save User in the database
+            });
+            result = _userModel["default"].find(); // Save User in the database
 
             user.save(function (err, registeredUser) {
               if (err) {
@@ -102,7 +146,7 @@ exports.register = /*#__PURE__*/function () {
               }
             });
 
-          case 15:
+          case 32:
           case "end":
             return _context.stop();
         }
@@ -186,7 +230,7 @@ function _login() {
                 }, _callee3);
               }));
 
-              return function (_x18, _x19) {
+              return function (_x19, _x20) {
                 return _ref3.apply(this, arguments);
               };
             }());
@@ -575,4 +619,23 @@ function _changeQuantity() {
     }, _callee10, null, [[0, 7]]);
   }));
   return _changeQuantity.apply(this, arguments);
+}
+
+function getPayload(_x18) {
+  return _getPayload.apply(this, arguments);
+}
+
+function _getPayload() {
+  _getPayload = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee11(req) {
+    return _regenerator["default"].wrap(function _callee11$(_context11) {
+      while (1) {
+        switch (_context11.prev = _context11.next) {
+          case 0:
+          case "end":
+            return _context11.stop();
+        }
+      }
+    }, _callee11);
+  }));
+  return _getPayload.apply(this, arguments);
 }
