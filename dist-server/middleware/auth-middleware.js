@@ -17,6 +17,9 @@ var _config = require("../config/config");
 
 var _jsonwebtoken = require("jsonwebtoken");
 
+//This function verifies the user token sent within the req.headers.authorization
+//Checks if it is sent with the request
+//This function is sent with every single request except Register
 function verifyUserToken(req, res, next) {
   var token = req.headers.authorization;
   console.log(token);
@@ -36,11 +39,15 @@ function verifyUserToken(req, res, next) {
   } catch (error) {
     res.status(400).send("Invalid Token");
   }
-}
+} //Called within the route middleware and moves to the next function
+//If condition is passed
+
 
 function IsUser(_x, _x2, _x3) {
   return _IsUser.apply(this, arguments);
-}
+} //Called within the route middleware and moves to the next function
+//If condition is passed
+
 
 function _IsUser() {
   _IsUser = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee(req, res, next) {

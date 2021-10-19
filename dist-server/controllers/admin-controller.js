@@ -19,6 +19,11 @@ var _fruits = _interopRequireDefault(require("../models/fruits"));
 
 var _transactions = _interopRequireDefault(require("../models/transactions"));
 
+//Changes Quantity according to the fruit name
+// payload {
+//    "fruitName" : "xyz",
+//   "newQuantity": 3
+//}
 function changeQuantity(_x, _x2) {
   return _changeQuantity.apply(this, arguments);
 }
@@ -84,7 +89,7 @@ function _getAllTransactionsAdmin() {
               break;
             }
 
-            return _context2.abrupt("return", truee);
+            return _context2.abrupt("return", result);
 
           case 6:
             _context2.next = 11;

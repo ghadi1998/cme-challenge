@@ -18,19 +18,29 @@ connect(db, function (err) {
   }
 });
 
+
+//   Payload = {
+//  "email": "xyz@gmail.com",
+//   "password": "xyz",
+//   "user_type_id": 0 || 1,
+//   "name": "xyz"
+//    }
 export async function register(req, res) {
+  //Check wether the body is empty or undefined
   if (isEmpty(req.body)) {
     res.status(400).send("Body Is Missing");
+  //Check if the user_type_id is valid , either 0 or 1
   } else if (req.body.user_type_id != 0 && req.body.user_type_id != 1) {
     res.status(400).send("User Type ID can be only 0 or 1");
   } else if (req.body.user_type_id === 1) {
+    //Check if there already exists an admin
     const allUsers = await User.find().exec();
-
     for (let i = 0; i < allUsers.length; i++) {
       if (allUsers[i].user_type_id === 1)
         res.status(400).send("Only one admin can register");
     }
   } else {
+    //Check if the user already exists
     const foundUser = await User.findOne({ email: req.body.email }).exec();
     if (foundUser) {
       res.status(401).send("user exists");
@@ -65,6 +75,11 @@ export async function register(req, res) {
   }
 }
 
+
+// Payload = {
+// "email": "xyz@gmail.com",
+//   "password": "xyz"
+//      }
 export async function login(req, res) {
   User.findOne({ email: req.body.email }, async (err, user) => {
     if (err) {
@@ -87,6 +102,8 @@ export async function login(req, res) {
   });
 }
 
+//Payload : Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxNjZkOGU2YjEzZWUyMTg4ODNkZGU2N
+//iIsInVzZXJfdHlwZV9pZCI6MSwiaWF0IjoxNjM0NjYwMjIwfQ.VyLfbQZIR-zq3-pVFdGHrjv_OpXpB4u8q5eAbHoi2y
 export async function getFruits(req, res, next) {
   try {
     const result = await fruits.find().exec();
@@ -96,12 +113,23 @@ export async function getFruits(req, res, next) {
   }
 }
 
+//Payload Header : Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxNjZkOGU2YjEzZWUyMTg4ODNkZGU2N
+//iIsInVzZXJfdHlwZV9pZCI6MSwiaWF0IjoxNjM0NjYwMjIwfQ.VyLfbQZIR-zq3-pVFdGHrjv_OpXpB4u8q5eAbHoi2y
+
+// Payload Body :
+// {
+// "name":"bananas",
+//  "quantity":"1",
+//  "productId":"6166e1278d6590aac75a66b6",
+//  "price":"3"
+//  }
 exports.buyFruits = async (req, res) => {
   const { productId, quantity, name, price } = req.body;
 
-  const userId = req.user.id; //TODO: the logged in user id
+  const userId = req.user.id;
 
   try {
+    //Check if there is available stock
     const result = await getStock(name, quantity, res);
     if (!result) {
       let cart = await Cart.findOne({ userId });
@@ -123,12 +151,14 @@ exports.buyFruits = async (req, res) => {
         }
         cart = await cart.save();
 
+        //create transaction and insert to transaction documents
         const newTransaction = await Transaction.create({
           transactionUser: userId,
           fruitType: name,
           quantity: quantity,
         });
 
+        //Insert user transaction to user model
         await insertUserTransaction(userId, newTransaction);
 
         return res.status(201).send(cart);
@@ -155,6 +185,7 @@ exports.buyFruits = async (req, res) => {
     res.status(500).send("Something went wrong");
   }
 };
+
 
 export async function getStock(name, quantity) {
   try {

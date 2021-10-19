@@ -42,11 +42,20 @@ var db = _config.DB_HOST;
   } else {
     console.log("Connected to mongodb");
   }
-});
+}); //   Payload = {
+//  "email": "xyz@gmail.com",
+//   "password": "xyz",
+//   "user_type_id": 0 || 1,
+//   "name": "xyz"
+//    }
 
 function register(_x, _x2) {
   return _register.apply(this, arguments);
-}
+} // Payload = {
+// "email": "xyz@gmail.com",
+//   "password": "xyz"
+//      }
+
 
 function _register() {
   _register = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee2(req, res) {
@@ -60,7 +69,8 @@ function _register() {
               break;
             }
 
-            res.status(400).send("Body Is Missing");
+            res.status(400).send("Body Is Missing"); //Check if the user_type_id is valid , either 0 or 1
+
             _context2.next = 31;
             break;
 
@@ -159,7 +169,9 @@ function _register() {
 
 function login(_x3, _x4) {
   return _login.apply(this, arguments);
-}
+} //Payload : Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxNjZkOGU2YjEzZWUyMTg4ODNkZGU2N
+//iIsInVzZXJfdHlwZV9pZCI6MSwiaWF0IjoxNjM0NjYwMjIwfQ.VyLfbQZIR-zq3-pVFdGHrjv_OpXpB4u8q5eAbHoi2y
+
 
 function _login() {
   _login = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee4(req, res) {
@@ -245,7 +257,16 @@ function _login() {
 
 function getFruits(_x5, _x6, _x7) {
   return _getFruits.apply(this, arguments);
-}
+} //Payload Header : Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxNjZkOGU2YjEzZWUyMTg4ODNkZGU2N
+//iIsInVzZXJfdHlwZV9pZCI6MSwiaWF0IjoxNjM0NjYwMjIwfQ.VyLfbQZIR-zq3-pVFdGHrjv_OpXpB4u8q5eAbHoi2y
+// Payload Body :
+// {
+// "name":"bananas",
+//  "quantity":"1",
+//  "productId":"6166e1278d6590aac75a66b6",
+//  "price":"3"
+//  }
+
 
 function _getFruits() {
   _getFruits = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee5(req, res, next) {
@@ -288,8 +309,7 @@ exports.buyFruits = /*#__PURE__*/function () {
         switch (_context.prev = _context.next) {
           case 0:
             _req$body = req.body, productId = _req$body.productId, quantity = _req$body.quantity, name = _req$body.name, price = _req$body.price;
-            userId = req.user.id; //TODO: the logged in user id
-
+            userId = req.user.id;
             _context.prev = 2;
             _context.next = 5;
             return getStock(name, quantity, res);
